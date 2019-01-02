@@ -8,6 +8,6 @@
 unsigned char rs_gal_multiply(unsigned char a, unsigned char b);
 unsigned char rs_gal_exp(unsigned char a, int n);
 unsigned char rs_gal_divide(unsigned char a, unsigned char b);
-void rs_gal_mul_slice_xor(unsigned char c, const unsigned char *in, unsigned char *out, unsigned char n);
+void rs_gal_mul_slice_xor(unsigned char c, const unsigned char *in, unsigned char *out, int n);
 
 #endif /* _WG_GALOIS_H */
