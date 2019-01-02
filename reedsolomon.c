@@ -37,7 +37,7 @@ int rs_init(struct reed_solomon *rs, unsigned char data_shard, unsigned char par
     return ret;
 }
 
-int rs_encode(const struct reed_solomon *rs, const unsigned char * const * data_shards, unsigned char * const * parity_shards, int shard_size)
+void rs_encode(const struct reed_solomon *rs, const unsigned char * const * data_shards, unsigned char * const * parity_shards, int shard_size)
 {
     unsigned char c, r;
     
