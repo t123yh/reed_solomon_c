@@ -35,7 +35,7 @@ static void rs_init_identity_matrix(unsigned char *matrix, unsigned char n)
 #define SWAP(A, B) { typeof(A) __swap_tmp = (A); (A) = (B); (B) = __swap_tmp; }
 
 /* use gaussian elimination to convert (l, r) to row reduced form. */
-static int rs_gaussian_elimination(unsigned char *left, unsigned char *right, unsigned char n)
+static void rs_gaussian_elimination(unsigned char *left, unsigned char *right, unsigned char n)
 {
     int r, rb, i;
     unsigned char tmp;
@@ -61,9 +61,14 @@ static int rs_gaussian_elimination(unsigned char *left, unsigned char *right, un
             }
         }
         
-        /* is a singular matrix */
+        /* We ignore the singular matrix check here,
+         * for that we won't encounter singular matrix in our code. */
+        
+        /* check for singular matrix */
+        /*
         if (unlikely(left[r * n + r] == 0))
             return -EINVAL;
+        */
         
         /* Scale the diagonal element to 1 */
         tmp = rs_gal_divide(1, left[r * n + r]);
@@ -106,7 +111,7 @@ static int rs_gaussian_elimination(unsigned char *left, unsigned char *right, un
             }
         }
     }
-    return 0;
+    /* return 0; */
 }
 
 
@@ -122,16 +127,12 @@ int rs_invert_square_matrix(unsigned char *mat, unsigned char *target, unsigned 
     }
     
     memcpy(tmp, mat, n * n);
-    rs_init_identity_matrix(target, n);
-    
-    ret = rs_gaussian_elimination(tmp, target, n);
-    if (ret != 0)
-        goto free;
+    rs_init_identity_matrix(result, n);
+    rs_gaussian_elimination(tmp, result, n);
     
     ret = 0;
-    
-    free:
     MEM_FREE_SMALL(tmp);
+    
     out:
     return ret;
 }
