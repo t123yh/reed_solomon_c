@@ -36,3 +36,12 @@ unsigned char rs_gal_divide(unsigned char a, unsigned char b)
         result += 255;
     return gal_exp_table[result];
 }
+
+void rs_gal_mul_slice_xor(unsigned char c, const unsigned char *in, unsigned char *out, unsigned char n)
+{
+    unsigned char i;
+    for (i = 0; i < n; i++)
+    {
+        out[i] ^= rs_gal_multiply(c, in[i]);
+    }
+}

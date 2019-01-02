@@ -5,10 +5,11 @@
 #include "mem.h"
 #include "reedsolomon.h"
 #include "matrixoperations.h"
+#include "galois.h"
 
 int rs_init(struct reed_solomon *rs, unsigned char data_shard, unsigned char parity_shard)
 {
-    unsigned char * r1, * r2;
+    unsigned char *r1, *r2;
     int ret = 0;
     
     r1 = MEM_ALLOC_SMALL(data_shard * data_shard);
@@ -35,3 +36,24 @@ int rs_init(struct reed_solomon *rs, unsigned char data_shard, unsigned char par
         MEM_FREE_SMALL(rs->base_matrix);
     return ret;
 }
+
+int rs_encode(const struct reed_solomon *rs, const unsigned char * const * data_shards, unsigned char * const * parity_shards, int shard_size)
+{
+    unsigned char c, r;
+    
+    for (c = 0; c < rs->parity_shard_count; c++)
+    {
+        memset(parity_shards[c], 0, shard_size);
+    }
+    
+    for (c = 0; c < rs->data_shard_count; c++)
+    {
+        const unsigned char *rowIn = data_shards[c];
+        for (r = 0; r < rs->parity_shard_count; r++)
+        {
+            unsigned char parity = rs->data_shard_count + r;
+            rs_gal_mul_slice_xor(rs->base_matrix[parity * rs->data_shard_count + c], rowIn, parity_shards[r], shard_size);
+        }
+    }
+}
+
