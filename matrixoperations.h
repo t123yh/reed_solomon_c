@@ -11,11 +11,11 @@ extern "C" {
 
 void rs_init_vandermonde(unsigned char *matrix, unsigned char rows, unsigned char cols);
 
-int rs_invert_square_matrix(unsigned char *mat, unsigned char *target, unsigned char n);
+int rs_invert_square_matrix(const unsigned char *mat, unsigned char *target, unsigned char n);
 
 void rs_matrix_multiply(
-        unsigned char *mat_a,
-        unsigned char *mat_b,
+        const unsigned char *mat_a,
+        const unsigned char *mat_b,
         unsigned char *result,
         unsigned char a_row,
         unsigned char a_col, /* == b_row */

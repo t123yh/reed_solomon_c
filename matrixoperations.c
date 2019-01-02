@@ -115,7 +115,7 @@ static void rs_gaussian_elimination(unsigned char *left, unsigned char *right, u
 }
 
 
-int rs_invert_square_matrix(unsigned char *mat, unsigned char *target, unsigned char n)
+int rs_invert_square_matrix(const unsigned char *mat, unsigned char *result, unsigned char n)
 {
     int ret = 0;
     
@@ -138,8 +138,8 @@ int rs_invert_square_matrix(unsigned char *mat, unsigned char *target, unsigned 
 }
 
 void rs_matrix_multiply(
-        unsigned char *mat_a,
-        unsigned char *mat_b,
+        const unsigned char *mat_a,
+        const unsigned char *mat_b,
         unsigned char *result,
         unsigned char a_row,
         unsigned char a_col, /* == b_row */
