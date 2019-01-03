@@ -4,13 +4,14 @@
 
 #include "galois.h"
 #include "galoisconstants.h"
+#include "mem.h"
 
-unsigned char rs_gal_multiply(unsigned char a, unsigned char b)
+uint8_t rs_gal_multiply(uint8_t a, uint8_t b)
 {
     return gal_mul_table[a][b];
 }
 
-unsigned char rs_gal_exp(unsigned char a, int n)
+uint8_t rs_gal_exp(uint8_t a, int n)
 {
     if (n == 0)
         return 1;
@@ -27,7 +28,7 @@ unsigned char rs_gal_exp(unsigned char a, int n)
     return gal_exp_table[logA];
 }
 
-unsigned char rs_gal_divide(unsigned char a, unsigned char b)
+uint8_t rs_gal_divide(uint8_t a, uint8_t b)
 {
     int result;
     
@@ -37,7 +38,7 @@ unsigned char rs_gal_divide(unsigned char a, unsigned char b)
     return gal_exp_table[result];
 }
 
-void rs_gal_mul_slice_xor(unsigned char c, const unsigned char *in, unsigned char *out, int n)
+void rs_gal_mul_slice_xor(uint8_t c, const uint8_t *in, uint8_t *out, int n)
 {
     int i;
     for (i = 0; i < n; i++)

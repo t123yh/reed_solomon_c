@@ -10,9 +10,9 @@
 // mostly ported from https://github.com/klauspost/reedsolomon/
 
 
-void rs_init_vandermonde(unsigned char *matrix, unsigned char rows, unsigned char cols)
+void rs_init_vandermonde(uint8_t *matrix, uint8_t rows, uint8_t cols)
 {
-    unsigned char r, c;
+    uint8_t r, c;
     
     for (r = 0; r < rows; r++)
     {
@@ -23,9 +23,9 @@ void rs_init_vandermonde(unsigned char *matrix, unsigned char rows, unsigned cha
     }
 }
 
-static void rs_init_identity_matrix(unsigned char *matrix, unsigned char n)
+static void rs_init_identity_matrix(uint8_t *matrix, uint8_t n)
 {
-    unsigned char i;
+    uint8_t i;
     
     memset(matrix, 0, n * n);
     for (i = 0; i < n; i++)
@@ -35,10 +35,10 @@ static void rs_init_identity_matrix(unsigned char *matrix, unsigned char n)
 #define SWAP(A, B) { typeof(A) __swap_tmp = (A); (A) = (B); (B) = __swap_tmp; }
 
 /* use gaussian elimination to convert (l, r) to row reduced form. */
-static void rs_gaussian_elimination(unsigned char *left, unsigned char *right, unsigned char n)
+static void rs_gaussian_elimination(uint8_t *left, uint8_t *right, uint8_t n)
 {
     int r, rb, i;
-    unsigned char tmp;
+    uint8_t tmp;
     
     for (r = 0; r < n; r++)
     {
@@ -115,9 +115,9 @@ static void rs_gaussian_elimination(unsigned char *left, unsigned char *right, u
 }
 
 
-void rs_invert_square_matrix(const unsigned char *mat, unsigned char *result, unsigned char n)
+void rs_invert_square_matrix(const uint8_t *mat, uint8_t *result, uint8_t n)
 {
-    unsigned char tmp[MAX_MATRIX_SIZE];
+    uint8_t tmp[MAX_MATRIX_SIZE];
     memcpy(tmp, mat, n * n);
     
     rs_init_identity_matrix(result, n);
@@ -125,15 +125,15 @@ void rs_invert_square_matrix(const unsigned char *mat, unsigned char *result, un
 }
 
 void rs_matrix_multiply(
-        const unsigned char *mat_a,
-        const unsigned char *mat_b,
-        unsigned char *result,
-        unsigned char a_row,
-        unsigned char a_col, /* == b_row */
-        unsigned char b_col
+        const uint8_t *mat_a,
+        const uint8_t *mat_b,
+        uint8_t *result,
+        uint8_t a_row,
+        uint8_t a_col, /* == b_row */
+        uint8_t b_col
 )
 {
-    unsigned char r, c, i, val;
+    uint8_t r, c, i, val;
     for (r = 0; r < a_row; r++)
     {
         for (c = 0; c < b_col; c++)

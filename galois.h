@@ -5,9 +5,11 @@
 #ifndef _WG_GALOIS_H
 #define _WG_GALOIS_H
 
-unsigned char rs_gal_multiply(unsigned char a, unsigned char b);
-unsigned char rs_gal_exp(unsigned char a, int n);
-unsigned char rs_gal_divide(unsigned char a, unsigned char b);
-void rs_gal_mul_slice_xor(unsigned char c, const unsigned char *in, unsigned char *out, int n);
+#include "mem.h"
+
+uint8_t rs_gal_multiply(uint8_t a, uint8_t b);
+uint8_t rs_gal_exp(uint8_t a, int n);
+uint8_t rs_gal_divide(uint8_t a, uint8_t b);
+void rs_gal_mul_slice_xor(uint8_t c, const uint8_t *in, uint8_t *out, int n);
 
 #endif /* _WG_GALOIS_H */

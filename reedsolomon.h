@@ -14,14 +14,14 @@ extern "C" {
 
 struct reed_solomon
 {
-    unsigned char data_shard_count;
-    unsigned char parity_shard_count;
-    unsigned char base_matrix[MAX_MATRIX_SIZE];
+    uint8_t data_shard_count;
+    uint8_t parity_shard_count;
+    uint8_t base_matrix[MAX_MATRIX_SIZE];
     struct matrix_tree invert_matrix;
 };
 
-int rs_init(struct reed_solomon *rs, unsigned char data_shard, unsigned char parity_shard);
-void rs_encode(const struct reed_solomon *rs, unsigned char * const * shards, int shard_size);
+int rs_init(struct reed_solomon *rs, uint8_t data_shard, uint8_t parity_shard);
+void rs_encode(const struct reed_solomon *rs, uint8_t * const * shards, int shard_size);
 
 #ifdef __cplusplus
 }

@@ -7,9 +7,9 @@
 #include "matrixoperations.h"
 #include "galois.h"
 
-int rs_init(struct reed_solomon *rs, unsigned char data_shard, unsigned char parity_shard)
+int rs_init(struct reed_solomon *rs, uint8_t data_shard, uint8_t parity_shard)
 {
-    unsigned char r1[MAX_MATRIX_SIZE], r2[MAX_MATRIX_SIZE];
+    uint8_t r1[MAX_MATRIX_SIZE], r2[MAX_MATRIX_SIZE];
     
     if (data_shard + parity_shard > MAX_MATRIX_ORDER)
         return -EINVAL;
@@ -23,10 +23,10 @@ int rs_init(struct reed_solomon *rs, unsigned char data_shard, unsigned char par
     return 0;
 }
 
-void rs_encode(const struct reed_solomon *rs, unsigned char * const * shards, int shard_size)
+void rs_encode(const struct reed_solomon *rs, uint8_t * const * shards, int shard_size)
 {
-    unsigned char c, r;
-    unsigned char * const * parity_shards = shards + rs->data_shard_count;
+    uint8_t c, r;
+    uint8_t * const * parity_shards = shards + rs->data_shard_count;
     
     for (c = 0; c < rs->parity_shard_count; c++)
     {
@@ -35,12 +35,13 @@ void rs_encode(const struct reed_solomon *rs, unsigned char * const * shards, in
     
     for (c = 0; c < rs->data_shard_count; c++)
     {
-        const unsigned char *rowIn = shards[c];
+        const uint8_t *rowIn = shards[c];
         for (r = 0; r < rs->parity_shard_count; r++)
         {
-            unsigned char parity = rs->data_shard_count + r;
+            uint8_t parity = rs->data_shard_count + r;
             rs_gal_mul_slice_xor(rs->base_matrix[parity * rs->data_shard_count + c], rowIn, parity_shards[r], shard_size);
         }
     }
 }
+
 
