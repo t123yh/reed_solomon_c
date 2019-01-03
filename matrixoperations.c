@@ -115,26 +115,13 @@ static void rs_gaussian_elimination(unsigned char *left, unsigned char *right, u
 }
 
 
-int rs_invert_square_matrix(const unsigned char *mat, unsigned char *result, unsigned char n)
+void rs_invert_square_matrix(const unsigned char *mat, unsigned char *result, unsigned char n)
 {
-    int ret = 0;
-    
-    unsigned char *tmp = MEM_ALLOC_SMALL(n * n);
-    if (unlikely(tmp == NULL))
-    {
-        ret = -ENOMEM;
-        goto out;
-    }
-    
+    unsigned char tmp[MAX_MATRIX_SIZE];
     memcpy(tmp, mat, n * n);
+    
     rs_init_identity_matrix(result, n);
     rs_gaussian_elimination(tmp, result, n);
-    
-    ret = 0;
-    MEM_FREE_SMALL(tmp);
-    
-    out:
-    return ret;
 }
 
 void rs_matrix_multiply(

@@ -5,6 +5,7 @@
 #ifndef _WG_REEDSOLOMON_H
 #define _WG_REEDSOLOMON_H
 
+#include "matrixoperations.h"
 #include "matrixtree.h"
 
 #ifdef __cplusplus
@@ -15,12 +16,13 @@ struct reed_solomon
 {
     unsigned char data_shard_count;
     unsigned char parity_shard_count;
-    unsigned char *base_matrix;
+    unsigned char base_matrix[MAX_MATRIX_SIZE];
     struct matrix_tree invert_matrix;
 };
 
 int rs_init(struct reed_solomon *rs, unsigned char data_shard, unsigned char parity_shard);
-void rs_encode(const struct reed_solomon *rs, const unsigned char * const * data_shards, unsigned char * const * parity_shards, int shard_size);
+void rs_encode(const struct reed_solomon *rs, unsigned char const * const * data_shards, unsigned char * const * parity_shards, int shard_size);
+// void rs_decode()
 
 #ifdef __cplusplus
 }

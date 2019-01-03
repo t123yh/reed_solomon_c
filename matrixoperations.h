@@ -5,13 +5,16 @@
 #ifndef _WG_MATRIXOPERATIONS_H
 #define _WG_MATRIXOPERATIONS_H
 
+#define MAX_MATRIX_ORDER 24
+#define MAX_MATRIX_SIZE (MAX_MATRIX_ORDER * MAX_MATRIX_ORDER)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 void rs_init_vandermonde(unsigned char *matrix, unsigned char rows, unsigned char cols);
 
-int rs_invert_square_matrix(const unsigned char *mat, unsigned char *target, unsigned char n);
+void rs_invert_square_matrix(const unsigned char *mat, unsigned char *target, unsigned char n);
 
 void rs_matrix_multiply(
         const unsigned char *mat_a,
