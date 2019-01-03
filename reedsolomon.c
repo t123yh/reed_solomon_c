@@ -23,9 +23,10 @@ int rs_init(struct reed_solomon *rs, unsigned char data_shard, unsigned char par
     return 0;
 }
 
-void rs_encode(const struct reed_solomon *rs, unsigned char const * const * data_shards, unsigned char * const * parity_shards, int shard_size)
+void rs_encode(const struct reed_solomon *rs, unsigned char * const * shards, int shard_size)
 {
     unsigned char c, r;
+    unsigned char * const * parity_shards = shards + rs->data_shard_count;
     
     for (c = 0; c < rs->parity_shard_count; c++)
     {
@@ -34,7 +35,7 @@ void rs_encode(const struct reed_solomon *rs, unsigned char const * const * data
     
     for (c = 0; c < rs->data_shard_count; c++)
     {
-        const unsigned char *rowIn = data_shards[c];
+        const unsigned char *rowIn = shards[c];
         for (r = 0; r < rs->parity_shard_count; r++)
         {
             unsigned char parity = rs->data_shard_count + r;

@@ -21,8 +21,7 @@ struct reed_solomon
 };
 
 int rs_init(struct reed_solomon *rs, unsigned char data_shard, unsigned char parity_shard);
-void rs_encode(const struct reed_solomon *rs, unsigned char const * const * data_shards, unsigned char * const * parity_shards, int shard_size);
-// void rs_decode()
+void rs_encode(const struct reed_solomon *rs, unsigned char * const * shards, int shard_size);
 
 #ifdef __cplusplus
 }
