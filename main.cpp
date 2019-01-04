@@ -31,8 +31,13 @@ int main()
     reed_solomon rs;
     rs_init(&rs, 10, 3);
     
+    // shard size is arbitrary
     const int shardSize = 997;
+    
+    // original 10 pieces of data can be recovered if any 10 of the 13 shards is preserved.
     const int dataShards = 10, parityShards = 3, totalShards = dataShards + parityShards;
+    
+    // store data
     uint8_t d[totalShards][shardSize];
     
     srand(time(NULL));
@@ -68,7 +73,6 @@ int main()
         std::cout.flags(f); // restore flags
         std::cout << std::endl;
     }
-    
     
     unsigned long validShards = (1 << totalShards) - 1;
     for (auto n : shardsToTest)
