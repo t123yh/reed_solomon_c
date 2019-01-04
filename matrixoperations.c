@@ -5,7 +5,7 @@
 #include <asm/errno.h>
 #include "matrixoperations.h"
 #include "galois.h"
-#include "mem.h"
+#include "common.h"
 
 // mostly ported from https://github.com/klauspost/reedsolomon/
 

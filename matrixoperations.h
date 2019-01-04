@@ -5,10 +5,7 @@
 #ifndef _WG_MATRIXOPERATIONS_H
 #define _WG_MATRIXOPERATIONS_H
 
-#include "mem.h"
-
-#define MAX_MATRIX_ORDER 24
-#define MAX_MATRIX_SIZE (MAX_MATRIX_ORDER * MAX_MATRIX_ORDER)
+#include "common.h"
 
 #ifdef __cplusplus
 extern "C" {

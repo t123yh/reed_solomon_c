@@ -4,7 +4,7 @@
 
 #include "galois.h"
 #include "galoisconstants.h"
-#include "mem.h"
+#include "common.h"
 
 uint8_t rs_gal_multiply(uint8_t a, uint8_t b)
 {

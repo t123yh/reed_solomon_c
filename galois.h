@@ -5,7 +5,7 @@
 #ifndef _WG_GALOIS_H
 #define _WG_GALOIS_H
 
-#include "mem.h"
+#include "common.h"
 
 uint8_t rs_gal_multiply(uint8_t a, uint8_t b);
 uint8_t rs_gal_exp(uint8_t a, int n);
