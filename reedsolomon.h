@@ -6,7 +6,6 @@
 #define _WG_REEDSOLOMON_H
 
 #include "common.h"
-#include "matrixtree.h"
 #include "radix-tree.h"
 
 #ifdef __cplusplus

@@ -830,8 +830,6 @@ static unsigned long __maxindex(unsigned int height)
     return index;
 }
 
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
-
 static void radix_tree_init_maxindex(void)
 {
     unsigned int i;
