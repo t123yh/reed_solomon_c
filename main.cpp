@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <math.h>
+#include <iostream>
+#include <iomanip>
 #include "reedsolomon.h"
+#include "radix-tree.h"
 #include "matrixoperations.h"
 
 void printMat(uint8_t *mat, int row, int col)
@@ -15,28 +18,80 @@ void printMat(uint8_t *mat, int row, int col)
     }
 }
 
+void p(bool x)
+{
+    if (x)
+        printf("true\n");
+    else
+        printf("false\n");
+}
+
 int main()
 {
     reed_solomon rs;
     rs_init(&rs, 10, 3);
     
-    uint8_t d[13][1024];
+    const int shardSize = 997;
+    const int dataShards = 10, parityShards = 3, totalShards = dataShards + parityShards;
+    uint8_t d[totalShards][shardSize];
     
-    for (int i = 0; i < 10; i++)
+    srand(time(NULL));
+    for (int i = 0; i < dataShards; i++)
     {
-        for (int j = 0; j < 1024; j++)
+        for (int j = 0; j < shardSize; j++)
         {
             d[i][j] = rand();
         }
     }
     
-    uint8_t *ds[13];
-    for (int i = 0; i < 13; i++)
+    uint8_t *ds[totalShards];
+    for (int i = 0; i < totalShards; i++)
     {
         ds[i] = d[i];
     }
     
-    for (int i = 0; i < 1000000; i++)
-        rs_encode(&rs, ds, 3);
-    printf("%d", ds[10][0]);
+    // 11 is a parity shard
+    const int shardsToTest[] = {2, 3, 11};
+    
+    // encode parity info
+    rs_encode(&rs, ds, shardSize);
+    
+    std::cout << "Shard size: " << shardSize << std::endl;
+    for (auto n : shardsToTest)
+    {
+        std::cout << "Original shard " << n << " data: ";
+        std::ios_base::fmtflags f(std::cout.flags()); // save flags
+        for (int i = 0; i < shardSize; i++)
+        {
+            std::cout << std::setfill('0') << std::setw(2) << std::hex << (int) ds[n][i] << " ";
+        }
+        std::cout.flags(f); // restore flags
+        std::cout << std::endl;
+    }
+    
+    
+    unsigned long validShards = (1 << totalShards) - 1;
+    for (auto n : shardsToTest)
+    {
+        std::cout << "Clearing shard " << n << " data" << std::endl;
+        memset(ds[n], 0, shardSize);
+        __clear_bit(n, &validShards);
+    }
+    std::cout << "Reconstructing..." << std::endl;
+    int ret = rs_reconstruct(&rs, ds, validShards, shardSize);
+    std::cout << "Reconstruction return code " << ret << std::endl;
+    
+    for (auto n : shardsToTest)
+    {
+        // Only data shards are recovered. Parity shards are not recovered, so don't display them.
+        if (n < dataShards)
+        {
+            std::cout << "Recovered shard " << n << " data: ";
+            for (int i = 0; i < shardSize; i++)
+            {
+                std::cout << std::setfill('0') << std::setw(2) << std::hex << (int) ds[n][i] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
 }
