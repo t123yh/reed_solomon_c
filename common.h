@@ -208,6 +208,7 @@ inline static void *rcu_dereference_raw(void *pVoid) { return pVoid; }
 #define __GFP_BITS_SHIFT (23 + IS_ENABLED(CONFIG_LOCKDEP))
 #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
 #define CONFIG_BASE_SMALL 0
+#define GFP_KERNEL 0
 #define DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
 /*
  * In case of changes, please don't forget to update
