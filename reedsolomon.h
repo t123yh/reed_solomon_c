@@ -28,6 +28,7 @@ static inline uint8_t total_shards(const struct reed_solomon *rs)
 int rs_init(struct reed_solomon *rs, uint8_t data_shard, uint8_t parity_shard);
 void rs_encode(const struct reed_solomon *rs, uint8_t * const * shards, int shard_size);
 int rs_reconstruct(const struct reed_solomon *rs, uint8_t * const * shards, unsigned long valid_shards, int shard_size);
+void rs_destroy(struct reed_solomon* rs);
 
 #ifdef __cplusplus
 }

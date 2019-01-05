@@ -22,7 +22,7 @@ int rs_init(struct reed_solomon *rs, uint8_t data_shard, uint8_t parity_shard)
     
     rs->data_shard_count = data_shard;
     rs->parity_shard_count = parity_shard;
-    INIT_RADIX_TREE(rs->inversion_tree, 0);
+    INIT_RADIX_TREE(rs->inversion_tree, GFP_KERNEL);
     
     rs_init_vandermonde(r2, data_shard + parity_shard, data_shard);
     rs_invert_square_matrix(r2, r1, data_shard);
@@ -114,4 +114,19 @@ int rs_reconstruct(const struct reed_solomon *rs, uint8_t * const * shards, unsi
     }
     
     return 0;
+}
+
+void rs_destroy(struct reed_solomon* rs)
+{
+    void **slot;
+    struct radix_tree_iter iter;
+    
+    radix_tree_for_each_slot(slot, rs->inversion_tree, &iter, 0)
+    {
+        MEM_FREE_SMALL(*slot);
+        radix_tree_delete(rs->inversion_tree, iter.index);
+    }
+    
+    MEM_FREE_SMALL(rs->inversion_tree);
+    memset(rs, 0, sizeof(struct reed_solomon));
 }
