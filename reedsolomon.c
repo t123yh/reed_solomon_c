@@ -2,6 +2,7 @@
 // Created by t123yh on 18-12-31.
 //
 #include <asm/errno.h>
+#include <limits.h>
 #include "common.h"
 #include "reedsolomon.h"
 #include "matrixoperations.h"
@@ -120,12 +121,17 @@ void rs_destroy(struct reed_solomon* rs)
 {
     void **slot;
     struct radix_tree_iter iter;
+    unsigned long last_index = ULONG_MAX;
     
     radix_tree_for_each_slot(slot, rs->inversion_tree, &iter, 0)
     {
         MEM_FREE_SMALL(*slot);
-        radix_tree_delete(rs->inversion_tree, iter.index);
+        if (last_index != ULONG_MAX)
+            radix_tree_delete(rs->inversion_tree, last_index);
+        last_index = iter.index;
     }
+    if (last_index != ULONG_MAX)
+        radix_tree_delete(rs->inversion_tree, last_index);
     
     MEM_FREE_SMALL(rs->inversion_tree);
     memset(rs, 0, sizeof(struct reed_solomon));
