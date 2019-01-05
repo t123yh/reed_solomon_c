@@ -32,7 +32,7 @@ int main()
     rs_init(&rs, 10, 3);
     
     // shard size is arbitrary
-    const int shardSize = 997;
+    const int shardSize = 66;
     
     // original 10 pieces of data can be recovered if any 10 of the 13 shards is preserved.
     const int dataShards = 10, parityShards = 3, totalShards = dataShards + parityShards;
@@ -98,4 +98,6 @@ int main()
             std::cout << std::endl;
         }
     }
+    
+    rs_destroy(&rs);
 }
