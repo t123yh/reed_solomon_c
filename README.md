@@ -2,6 +2,8 @@
 ## Introduction
 This project implements Reed Solomon Erasure Coding in pure C. It is ported from https://github.com/klauspost/reedsolomon (currently without SIMD instructions, but I'll add them later). Though aimed at working in Linux Kernel, it's also functional in user space programs.
 
+It's currently using a Radix Tree implementation copied from Linux Kernel to cache inversion tree, and thus introducing bloated marco definitions in `common.h`. A fresh implementation is needed.
+
 ## API
 The API is simple and straightforward. Only 4 basic functions are implemented, as follows:
 ```c
