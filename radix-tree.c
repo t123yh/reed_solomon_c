@@ -456,7 +456,6 @@ static inline bool radix_tree_shrink(struct radix_tree_root *root,
 				update_node(node);
 		}
 
-		WARN_ON_ONCE(!list_empty(&node->private_list));
 		radix_tree_node_free(node);
 		shrunk = true;
 	}
@@ -495,7 +494,6 @@ static bool delete_node(struct radix_tree_root *root,
 			root->rnode = NULL;
 		}
 
-		WARN_ON_ONCE(!list_empty(&node->private_list));
 		radix_tree_node_free(node);
 		deleted = true;
 
@@ -600,7 +598,6 @@ static void radix_tree_free_nodes(struct radix_tree_node *node)
 			struct radix_tree_node *old = child;
 			offset = child->offset + 1;
 			child = child->parent;
-			WARN_ON_ONCE(!list_empty(&old->private_list));
 			radix_tree_node_free(old);
 			if (old == entry_to_node(node))
 				return;
@@ -1814,7 +1811,6 @@ radix_tree_node_ctor(void *arg)
 	struct radix_tree_node *node = arg;
 
 	memset(node, 0, sizeof(*node));
-	INIT_LIST_HEAD(&node->private_list);
 }
 
 static unsigned long __maxindex(unsigned int height)

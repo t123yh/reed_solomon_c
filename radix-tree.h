@@ -93,10 +93,6 @@ struct radix_tree_node {
 	unsigned char	exceptional;	/* Exceptional entry count */
 	struct radix_tree_node *parent;		/* Used when ascending tree */
 	struct radix_tree_root *root;		/* The tree we belong to */
-	union {
-		struct list_head private_list;	/* For tree user */
-		struct rcu_head	rcu_head;	/* Used when freeing node */
-	};
 	void __rcu	*slots[RADIX_TREE_MAP_SIZE];
 	unsigned long	tags[RADIX_TREE_MAX_TAGS][RADIX_TREE_TAG_LONGS];
 };

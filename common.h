@@ -109,10 +109,6 @@ static __always_inline unsigned long __ffs(unsigned long word)
     return num;
 }
 
-struct list_head {
-    struct list_head *next, *prev;
-};
-
 #define __ARG_PLACEHOLDER_1 0,
 #define __take_second_arg(__ignored, val, ...) val
 
@@ -120,13 +116,13 @@ struct list_head {
  * The use of "&&" / "||" is limited in certain expressions.
  * The following enable to calculate "and" / "or" with macro expansion only.
  */
-#define __and(x, y)			___and(x, y)
-#define ___and(x, y)			____and(__ARG_PLACEHOLDER_##x, y)
-#define ____and(arg1_or_junk, y)	__take_second_arg(arg1_or_junk y, 0)
+#define __and(x, y)            ___and(x, y)
+#define ___and(x, y)            ____and(__ARG_PLACEHOLDER_##x, y)
+#define ____and(arg1_or_junk, y)    __take_second_arg(arg1_or_junk y, 0)
 
-#define __or(x, y)			___or(x, y)
-#define ___or(x, y)			____or(__ARG_PLACEHOLDER_##x, y)
-#define ____or(arg1_or_junk, y)		__take_second_arg(arg1_or_junk 1, y)
+#define __or(x, y)            ___or(x, y)
+#define ___or(x, y)            ____or(__ARG_PLACEHOLDER_##x, y)
+#define ____or(arg1_or_junk, y)        __take_second_arg(arg1_or_junk 1, y)
 
 /*
  * Helper macros to use CONFIG_ options in C/CPP expressions. Note that
@@ -141,9 +137,9 @@ struct list_head {
  * When CONFIG_BOOGER is not defined, we generate a (... 1, 0) pair, and when
  * the last step cherry picks the 2nd arg, we get a zero.
  */
-#define __is_defined(x)			___is_defined(x)
-#define ___is_defined(val)		____is_defined(__ARG_PLACEHOLDER_##val)
-#define ____is_defined(arg1_or_junk)	__take_second_arg(arg1_or_junk 1, 0)
+#define __is_defined(x)            ___is_defined(x)
+#define ___is_defined(val)        ____is_defined(__ARG_PLACEHOLDER_##val)
+#define ____is_defined(arg1_or_junk)    __take_second_arg(arg1_or_junk 1, 0)
 
 /*
  * IS_BUILTIN(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y', 0
@@ -165,7 +161,7 @@ struct list_head {
  * built-in code when CONFIG_FOO is set to 'm'.
  */
 #define IS_REACHABLE(option) __or(IS_BUILTIN(option), \
-				__and(IS_MODULE(option), __is_defined(MODULE)))
+                __and(IS_MODULE(option), __is_defined(MODULE)))
 
 /*
  * IS_ENABLED(CONFIG_FOO) evaluates to 1 if CONFIG_FOO is set to 'y' or 'm',
@@ -174,67 +170,78 @@ struct list_head {
 #define IS_ENABLED(option) __or(IS_BUILTIN(option), IS_MODULE(option))
 
 #include <stdio.h>
+
 #define BUG_ON(PREDICATE) ({if (PREDICATE) {printf("BUG!!\n"); }})
-#define WARN_ON(PREDICATE) ({if (PREDICATE) {printf("WARN!!\n"); }})
-#define WARN_ON_ONCE(PREDICATE) ({if (PREDICATE) {printf("WARN!!\n"); }})
+#define WARN_ON(condition) ({                    \
+    int __ret_warn_on = !!(condition);            \
+    if (unlikely(__ret_warn_on))                \
+        printf("[WARN] assertion failed at %s:%d\n",    \
+                __FILE__, __LINE__);        \
+    unlikely(__ret_warn_on);                \
+})
+#ifndef WARN_ON_ONCE
+#define WARN_ON_ONCE(condition)    ({                \
+    static bool __warned;        \
+    int __ret_warn_once = !!(condition);            \
+                                \
+    if (unlikely(__ret_warn_once && !__warned)) {        \
+        __warned = true;                \
+        WARN_ON(1);                    \
+    }                            \
+    unlikely(__ret_warn_once);                \
+})
+#endif
+
 #define __force
 #define __rcu
 #define __read_mostly
-struct rcu_head {};
+
 inline static void *rcu_dereference(void *pVoid) { return pVoid; }
+
 inline static void *rcu_dereference_raw(void *pVoid) { return pVoid; }
+
 #define __must_check __attribute__((warn_unused_result))
 #define rcu_assign_pointer(p, v) ((p) = (v))
 
 #define READ_ONCE(x) (x)
 #define WRITE_ONCE(x, val) (x = val)
-
-/**
- * list_empty - tests whether a list is empty
- * @head: the list to test.
- */
-static inline int list_empty(const struct list_head *head)
-{
-    return READ_ONCE(head->next) == head;
-}
-
 #define __GFP_BITS_SHIFT (23 + IS_ENABLED(CONFIG_LOCKDEP))
 #define __GFP_BITS_MASK ((__force gfp_t)((1 << __GFP_BITS_SHIFT) - 1))
 #define CONFIG_BASE_SMALL 0
-#define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
+#define DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
 /*
  * In case of changes, please don't forget to update
  * include/trace/events/mmflags.h and tools/perf/builtin-kmem.c
  */
 
 /* Plain integer GFP bitmasks. Do not use this directly. */
-#define ___GFP_DMA		0x01u
-#define ___GFP_HIGHMEM		0x02u
-#define ___GFP_DMA32		0x04u
-#define ___GFP_MOVABLE		0x08u
-#define ___GFP_RECLAIMABLE	0x10u
-#define ___GFP_HIGH		0x20u
-#define ___GFP_IO		0x40u
-#define ___GFP_FS		0x80u
-#define ___GFP_WRITE		0x100u
-#define ___GFP_NOWARN		0x200u
-#define ___GFP_RETRY_MAYFAIL	0x400u
-#define ___GFP_NOFAIL		0x800u
-#define ___GFP_NORETRY		0x1000u
-#define ___GFP_MEMALLOC		0x2000u
-#define ___GFP_COMP		0x4000u
-#define ___GFP_ZERO		0x8000u
-#define ___GFP_NOMEMALLOC	0x10000u
-#define ___GFP_HARDWALL		0x20000u
-#define ___GFP_THISNODE		0x40000u
-#define ___GFP_ATOMIC		0x80000u
-#define ___GFP_ACCOUNT		0x100000u
-#define ___GFP_DIRECT_RECLAIM	0x200000u
-#define ___GFP_KSWAPD_RECLAIM	0x400000u
+#define ___GFP_DMA        0x01u
+#define ___GFP_HIGHMEM        0x02u
+#define ___GFP_DMA32        0x04u
+#define ___GFP_MOVABLE        0x08u
+#define ___GFP_RECLAIMABLE    0x10u
+#define ___GFP_HIGH        0x20u
+#define ___GFP_IO        0x40u
+#define ___GFP_FS        0x80u
+#define ___GFP_WRITE        0x100u
+#define ___GFP_NOWARN        0x200u
+#define ___GFP_RETRY_MAYFAIL    0x400u
+#define ___GFP_NOFAIL        0x800u
+#define ___GFP_NORETRY        0x1000u
+#define ___GFP_MEMALLOC        0x2000u
+#define ___GFP_COMP        0x4000u
+#define ___GFP_ZERO        0x8000u
+#define ___GFP_NOMEMALLOC    0x10000u
+#define ___GFP_HARDWALL        0x20000u
+#define ___GFP_THISNODE        0x40000u
+#define ___GFP_ATOMIC        0x80000u
+#define ___GFP_ACCOUNT        0x100000u
+#define ___GFP_DIRECT_RECLAIM    0x200000u
+#define ___GFP_KSWAPD_RECLAIM    0x400000u
 #ifdef CONFIG_LOCKDEP
 #define ___GFP_NOLOCKDEP	0x800000u
 #else
-#define ___GFP_NOLOCKDEP	0
+#define ___GFP_NOLOCKDEP    0
 #endif
 /* If the above are modified, __GFP_BITS_SHIFT may need updating */
 
@@ -245,24 +252,18 @@ static inline int list_empty(const struct list_head *head)
  * without the underscores and use them consistently. The definitions here may
  * be used in bit comparisons.
  */
-#define __GFP_DMA	((__force gfp_t)___GFP_DMA)
-#define __GFP_HIGHMEM	((__force gfp_t)___GFP_HIGHMEM)
-#define __GFP_DMA32	((__force gfp_t)___GFP_DMA32)
-#define __GFP_MOVABLE	((__force gfp_t)___GFP_MOVABLE)  /* ZONE_MOVABLE allowed */
-#define GFP_ZONEMASK	(__GFP_DMA|__GFP_HIGHMEM|__GFP_DMA32|__GFP_MOVABLE)
+#define __GFP_DMA    ((__force gfp_t)___GFP_DMA)
+#define __GFP_HIGHMEM    ((__force gfp_t)___GFP_HIGHMEM)
+#define __GFP_DMA32    ((__force gfp_t)___GFP_DMA32)
+#define __GFP_MOVABLE    ((__force gfp_t)___GFP_MOVABLE)  /* ZONE_MOVABLE allowed */
+#define GFP_ZONEMASK    (__GFP_DMA|__GFP_HIGHMEM|__GFP_DMA32|__GFP_MOVABLE)
 
 
 #define u32 unsigned int
 #define u64 unsigned long long
 
-static inline void INIT_LIST_HEAD(struct list_head *list)
-{
-    WRITE_ONCE(list->next, list);
-    list->prev = list;
-}
-
 #define BITS_PER_TYPE(type) (sizeof(type) * BITS_PER_BYTE)
-#define BITS_TO_LONGS(nr)	DIV_ROUND_UP(nr, BITS_PER_TYPE(long))
+#define BITS_TO_LONGS(nr)    DIV_ROUND_UP(nr, BITS_PER_TYPE(long))
 
 #endif
 
